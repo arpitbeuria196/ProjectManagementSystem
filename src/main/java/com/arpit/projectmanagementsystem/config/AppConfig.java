@@ -1,4 +1,4 @@
-package com.arpit.projectmanagementsystem.Config;
+package com.arpit.projectmanagementsystem.config;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -23,18 +22,20 @@ import java.util.Collections;
 public class AppConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        http.sessionManagement(Management -> Management.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(Authorize -> Authorize.requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**")
+                        .authenticated().anyRequest().permitAll())
+                .addFilterBefore(new JwtTokenValidator(),BasicAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-                .cors(cors -> cors.configurationSource(corsConfiguration()));
-
-        return  httpSecurity.build();
+        return http.build();
     }
 
-    private CorsConfigurationSource corsConfiguration() {
+    private CorsConfigurationSource corsConfigurationSource() {
 
         return  new CorsConfigurationSource() {
             @Override
@@ -52,7 +53,7 @@ public class AppConfig {
                 corsConfig.setExposedHeaders(Arrays.asList("Authorization"));
                 corsConfig.setMaxAge(3000L);
 
-                return null;
+                return corsConfig;
             }
         };
     }

@@ -1,88 +1,45 @@
 package com.arpit.projectmanagementsystem.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.Data;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private  Long Id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    private String fullName;
-    private String email;
-    private String password;
+	private String fullName;
+	private String email;
+	private String password;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "assignee",cascade = CascadeType.ALL )
-    private List<Issue> assignedValues = new ArrayList<>();
+	private String role;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    private List<Issue> assignedIssues = new ArrayList<>();
 
-    public User() {
-    }
 
-    public User(Long id, String fullName, String email, String password, List<Issue> assignedValues, int projectSize) {
-        Id = id;
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-        this.assignedValues = assignedValues;
-        this.projectSize = projectSize;
-    }
+//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+//	private Subscription subscription;
 
-    private int projectSize;
+	private int projectSize=0;
+	
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "team")
+//    private List<Project> projects = new ArrayList<>();
+//
 
-    public Long getId() {
-        return Id;
-    }
-
-    public void setId(Long id) {
-        Id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Issue> getAssignedValues() {
-        return assignedValues;
-    }
-
-    public void setAssignedValues(List<Issue> assignedValues) {
-        this.assignedValues = assignedValues;
-    }
-
-    public int getProjectSize() {
-        return projectSize;
-    }
-
-    public void setProjectSize(int projectSize) {
-        this.projectSize = projectSize;
-    }
 }

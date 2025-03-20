@@ -1,4 +1,4 @@
-package com.arpit.projectmanagementsystem.Config;
+package com.arpit.projectmanagementsystem.config;
 
 public class JwtConstant {
     public static final String SECRET_KEY = "vshbcxsanxklsmxklamxlknwslkxnslkcxnqskxqlkwn;k";
